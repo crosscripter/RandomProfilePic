@@ -1,0 +1,61 @@
+<title>(loading...)</title>
+<style>
+  body { font-family: sans-serif; box-sizing: border-box; }
+  a { text-decoration: none; }
+  img { width: 300px; height: 250px;}
+  button { padding: .5em; margin-right: -5px; width: 100px; }
+</style>
+<a id="link" href="#" target="_new"><img src="" id="pic"></a>
+<div id='uid'>Searching for random pic...</div>
+<button id="back">&lt;&lt; Back</button>
+<button id="slideshow">Auto On</button>
+<button id="next">Next &gt;&gt;</button>
+<script>
+window.addEventListener('load', function() {
+  var running = false;
+  var plink = "";
+  var pid = 0;
+  var history = [];
+
+  function load(uid) {
+    window.document.title = "(loading...)";
+    var purl = "http://facebook.com/profile.php?id=" + uid;
+    document.querySelector("#link").href = purl;
+ 	document.querySelector('#uid').innerHTML = plink;
+    var url = "https://graph.facebook.com/" + uid + "/picture?type=large";
+    var pic = document.querySelector('#pic');
+    window.document.title = uid;
+    pic.src = url;
+    pic.style.backgroundSize = "cover";
+  }
+
+  function back() {
+  	history.pop();
+  	var uid = history.pop();
+  	load(uid);
+  }
+
+  function next() {
+    var uid = Math.floor((Math.random() * 340000000) + 330000000);
+    history.push(uid);
+    load(uid);
+  }
+
+  document.querySelector("#back").addEventListener("click", back);
+  document.querySelector("#next").addEventListener("click", next);  
+  
+  document.querySelector("#slideshow").addEventListener("click", function() {
+  	if (!running) {
+  		running = true;
+  		document.querySelector("#slideshow").innerText = "Auto Off";
+  		pid = setInterval(next, 1000);
+  	} else  {
+  		running = false;
+  		document.querySelector("#slideshow").innerText = "Auto On";
+  		clearInterval(pid);
+  	}
+  });
+
+  next();
+});
+</script>
